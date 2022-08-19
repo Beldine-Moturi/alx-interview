@@ -1,38 +1,77 @@
 #!/usr/bin/python3
-"""Parses log from standard input"""
+"""
+script will read input fron stdin and process the informartion
+"""
+from signal import signal, SIGINT
 import sys
 
 
-def parse_logs():
-    """Parses log from stdin"""
-    accept_codes = {
-        200: 0, 301: 0,
-        400: 0, 401: 0,
-        403: 0, 404: 0,
-        405: 0, 500: 0
-        }
-    try:
-        line_num = 0
-        file_size = 0
-        # status_codes = {}
-        for line in sys.stdin:
-            line_num += 1
-            tokens = line.split(" ")[-2:]
-            file_size += int(tokens[1])
-            code = tokens[0]
-            if (code).isdigit() and int(code) in accept_codes.keys():
-                accept_codes[int(code)] = accept_codes.get(int(code)) + 1
-            keys = list(accept_codes.keys())
-            # status_codes.sort()
-            if line_num > 9:
-                print("File size: {}".format(file_size))
-                [print("{}: {}".format(i, accept_codes.get(i))) for i in keys
-                    if accept_codes.get(i) > 0]
-    except Exception as e:
-        # [print("{}: {}".format(i, status_codes.get(i))) for i in keys]
-        [print("{}: {}".format(i, accept_codes.get(i))) for i in keys
-            if accept_codes.get(i) > 0]
+class Log:
+    """
+    Log class for handling log processessing
+    """
+    count = 0
+    sum = 0
+    status_code = {}
+    code_choice = [200, 301, 400, 401, 403, 404, 405, 500]
+
+    @staticmethod
+    def process() -> None:
+        """Processes the log data
+        Return:
+            None
+        """
+        # print(status_code)
+        print("File size: {}".format(Log.sum))
+        for code in Log.code_choice:
+            if code in Log.status_code.keys():
+                print('{}: {}'.format(
+                    code,
+                    Log.status_code.get(code)
+                    ))
+        Log.count = 0
+        Log.sum = 0
+        Log.status_code = {}
+        return None
 
 
-if __name__ == "__main__":
-    parse_logs()
+def handler(signal_received, frame) -> None:
+    """ SIGINT handler function to handle keyboard interrupt"""
+    # signal(SIGINT, handler)
+    Log.process()
+    return None
+
+
+def main():
+    """ The main function of the program
+    """
+    signal(SIGINT, handler)
+
+    for line in sys.stdin:
+
+        str_code = line.split(" ")[-2]
+        # print(str_code)
+        if str_code.isdigit():
+            code = int(line.split(" ")[-2])
+        else:
+            continue
+
+        if code not in Log.status_code.keys():
+            Log.status_code[code] = 1
+        else:
+            Log.status_code[code] += 1
+
+        # print(Log.status_code)
+        try:
+            size = int(line.split(" ")[-1])
+            Log.sum += size
+        except Exception as e:
+            print("Error - {}".format(e))
+
+        Log.count += 1
+        if Log.count == 10:
+            Log.process()
+
+
+if __name__ == '__main__':
+    main()
