@@ -7,6 +7,9 @@ def minOperations(n):
     """Returns the minimum number of operations needed to
     copy and paste a string n times"""
 
+    if (n <= 0):
+        return 0
+
     my_list = []
     # even number divisible
     while n % 2 == 0:
