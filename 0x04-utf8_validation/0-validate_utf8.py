@@ -18,16 +18,16 @@ def validUTF8(data):
     '10000000' == 128 <> '10111111' == 191
     """
 
-    l = len(data)
+    length = len(data)
 
-    if l == 0:
+    if length == 0:
         return True
 
     val = data[0]
     if val > 255:
         return False
     if val < 128:
-        no_of_bytes = 1
+        return True
     elif (val >= 192) and (val <= 223):
         no_of_bytes = 2
     elif (val >= 224) and (val <= 239):
@@ -36,13 +36,12 @@ def validUTF8(data):
         no_of_bytes = 4
     else:
         return False
-    
-    if l < no_of_bytes:
+
+    if length < no_of_bytes:
         return False
 
-    if l > 1:
-        for i in range(1, no_of_bytes):
-            if not ((data[i] >= 128) and (data[i] <= 191)):
-                return False
+    for i in range(1, no_of_bytes):
+        if not ((data[i] >= 128) and (data[i] <= 191)):
+            return False
 
     return True
