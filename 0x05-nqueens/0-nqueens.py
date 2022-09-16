@@ -62,7 +62,7 @@ def place_queen(board, row):
 if __name__ == "__main__":
     # Get the size of the board from the command line
     args = sys.argv
-    if len(args) != 2:
+    if len(args) < 2:
         print("Usage: nqueens N")
         sys.exit(1)
     if not args[1].isdigit():
