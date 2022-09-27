@@ -20,7 +20,6 @@ def makeChange(coins, total):
             else:
                 sum += coin
                 count += 1
-                #print(count)
         if sum == total:
             return count
 
