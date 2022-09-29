@@ -10,8 +10,8 @@ def island_perimeter(grid):
         for j in range(len(grid[i])):
             if grid[i][j]:
                 above = grid[i - 1][j] if i else 0
-                below = grid[i + 1][j] if i < len(grid) else 0
-                right = grid[i][j + 1] if j < len(grid[i]) else 0
+                below = grid[i + 1][j] if i < len(grid) - 1 else 0
+                right = grid[i][j + 1] if j < len(grid[i]) - 1 else 0
                 left = grid[i][j - 1] if j else 0
 
                 if not above:
